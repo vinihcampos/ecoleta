@@ -1,7 +1,8 @@
 import express, { request, response } from 'express';
 import multer from 'multer';
 import multerConfig from './config/multer';
-import {celebrate, Joi} from 'celebrate';
+import parameterChecking from './controller/util';
+
 
 import PointsController from './controller/pointsController';
 import ItemsController from './controller/itemsController';
@@ -24,20 +25,7 @@ routes.get('/points/:id', pointsController.show);
 // Create a new collect point
 routes.post('/points', 
     upload.single('image'),
-    celebrate({
-        body: Joi.object().keys({
-            name: Joi.string().required(),
-            email: Joi.string().required().email(),
-            whatsapp: Joi.number().required(),
-            latitude: Joi.number().required(),
-            longitude: Joi.number().required(),
-            city: Joi.string().required(),
-            uf: Joi.string().required().max(2),
-            items: Joi.string().required()
-        })
-    }, {
-        abortEarly: false
-    }),
+    parameterChecking,
     pointsController.create
 );
 
