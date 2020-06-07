@@ -64,7 +64,7 @@ class PointsController {
 
         const serializedPoint = {
             ...point,
-            image_url: `http://192.168.0.113:3333/uploads/${point.image}`,
+            image_url: `/uploads/${point.image}`,
         }
 
         return response.json({ point: serializedPoint, items });
@@ -80,15 +80,17 @@ class PointsController {
         const points = await knex('points')
             .select('points.*')
             .join('point_items', 'points.id', '=', 'point_items.point_id')
-            .whereIn('point_items.item_id', parsedItems )
-            .where('city', String(city))
-            .where('uf', String(uf))
+            .modify(query => {
+                if(parsedItems !== undefined) query.whereIn('point_items.item_id', parsedItems );
+                if(city !== undefined) query.where('city', 'ilike', String(city));
+                if(uf !== undefined) query.where('uf', 'ilike', String(uf));
+            })
             .distinct();
         
         const serializedPoints = points.map(point => {
             return {
                 ...point,
-                image_url: `http://192.168.0.113:3333/uploads/${point.image}`,
+                image_url: `/uploads/${point.image}`,
             };
         });
 
