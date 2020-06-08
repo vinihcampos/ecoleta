@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import './styles.css'
 import logo from '../../assets/logo.svg';
+import { CREATE_POINT } from '../../constants';
 
 const Home = () => {
     return (
@@ -16,7 +17,7 @@ const Home = () => {
                     <h1>Seu marketplace de coleta de resíduos.</h1>
                     <p>Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente.</p>
 
-                    <Link to="/create">
+                    <Link to={ CREATE_POINT }>
                         <span><FiLogIn/></span>
                         <strong>Pesquisar pontos de coleta</strong>
                     </Link>

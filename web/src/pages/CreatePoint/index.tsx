@@ -9,6 +9,7 @@ import ibge from '../../services/ibge';
 import './styles.css';
 import logo from '../../assets/logo.svg';
 import Dropzone from '../../components/Dropzone';
+import { ROOT, ITEMS, FILTER_UF, UF, FILTER_CITY } from '../../constants';
 
 interface Item {
     id: number;
@@ -111,7 +112,7 @@ const CreatePoint = () => {
 
         if(response.status === 200){
             alert('Ponto de coleta criado com sucesso!');
-            history.push('/');
+            history.push(ROOT);
             return;
         }
 
@@ -121,13 +122,14 @@ const CreatePoint = () => {
     const history = useHistory();
 
     useEffect(() => {
-        api.get('items').then(response => {
+        api.get(ITEMS).then(response => {
             setItems(response.data);
+            console.log(response.data);
         });
     }, []);
 
     useEffect( () => {
-        ibge.get<IBGEUFResponse[]>('estados?orderBy=nome').then(response =>{
+        ibge.get<IBGEUFResponse[]>(FILTER_UF).then(response =>{
             const serializedUF = response.data.map(uf => {
                 return {
                     id: uf.id,
@@ -146,7 +148,7 @@ const CreatePoint = () => {
             return;
         }
 
-        ibge.get<IBGECityResponse[]>(`estados/${selectedUf}/municipios?orderBy=nome`).then(response =>{
+        ibge.get<IBGECityResponse[]>(`${UF}/${selectedUf}${FILTER_CITY}`).then(response =>{
             const serializedCities = response.data.map(city => {
                 return {
                     id: city.id,
@@ -171,7 +173,7 @@ const CreatePoint = () => {
             <header>
                 <img src={logo} alt="Ecoleta"/>
 
-                <Link to="/">
+                <Link to={ROOT}>
                     <FiArrowLeft/>
                     Voltar para home
                 </Link>
@@ -245,7 +247,9 @@ const CreatePoint = () => {
                             <li key={item.id} 
                                 onClick={() => handleSelectItem(item.id)}
                                 className={selectedItems.has(item.id) ? 'selected' : ''}>
-                                <img src={item.image_url} alt={item.name}/>
+                                <img 
+                                    src={`${process.env.REACT_APP_SERVER}${item.image_url}`} 
+                                    alt={item.name}/>
                                 <span>{item.name}</span>
                             </li>
                         ))}                        
