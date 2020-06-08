@@ -14,7 +14,7 @@ class PointsController {
             longitude,
             items
         } = request.body;
-    
+
         const trx = await knex.transaction();
         
         const point = {
@@ -79,11 +79,13 @@ class PointsController {
 
         const points = await knex('points')
             .select('points.*')
-            .join('point_items', 'points.id', '=', 'point_items.point_id')
             .modify(query => {
-                if(parsedItems !== undefined) query.whereIn('point_items.item_id', parsedItems );
                 if(city !== undefined) query.where('city', String(city));
                 if(uf !== undefined) query.where('uf', String(uf).toUpperCase());
+                if(items !== undefined){
+                    query.join('point_items', 'points.id', '=', 'point_items.point_id')
+                    query.whereIn('point_items.item_id', parsedItems );
+                }
             })
             .distinct();
         
