@@ -1,10 +1,10 @@
 import React from 'react';
-import {FiLogIn} from 'react-icons/fi';
+import { FiLogIn, FiSearch } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 import './styles.css'
 import logo from '../../assets/logo.svg';
-import { CREATE_POINT } from '../../constants';
+import { CREATE_POINT, SEARCH_POINT } from '../../constants';
 
 const Home = () => {
     return (
@@ -19,6 +19,10 @@ const Home = () => {
 
                     <Link to={ CREATE_POINT }>
                         <span><FiLogIn/></span>
+                        <strong>Cadastre um ponto de coleta</strong>
+                    </Link>
+                    <Link to={ SEARCH_POINT }>
+                        <span><FiSearch/></span>
                         <strong>Pesquisar pontos de coleta</strong>
                     </Link>
                 </main>

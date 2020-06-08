@@ -1,0 +1,29 @@
+.sucess-content{
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    background-color: #0E0A14;
+    opacity: 0.95;
+}
+
+#message{
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#message h1{
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    color: #F0F0F5; 
+}
+
+#message span{
+    color: #34CB79;
+    font-size: 48px;
+}

@@ -9,7 +9,7 @@ import ibge from '../../services/ibge';
 import './styles.css';
 import logo from '../../assets/logo.svg';
 import Dropzone from '../../components/Dropzone';
-import { ROOT, ITEMS, FILTER_UF, UF, FILTER_CITY } from '../../constants';
+import { ROOT, ITEMS, FILTER_UF, UF, FILTER_CITY, SUCCESS } from '../../constants';
 
 interface Item {
     id: number;
@@ -112,7 +112,7 @@ const CreatePoint = () => {
 
         if(response.status === 200){
             alert('Ponto de coleta criado com sucesso!');
-            history.push(ROOT);
+            history.push(SUCCESS);
             return;
         }
 
