@@ -111,7 +111,6 @@ const CreatePoint = () => {
         const response = await api.post('points', data);
 
         if(response.status === 200){
-            alert('Ponto de coleta criado com sucesso!');
             history.push(SUCCESS);
             return;
         }
