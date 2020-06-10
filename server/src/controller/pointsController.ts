@@ -79,20 +79,29 @@ class PointsController {
 
         const points = await knex('points')
             .select('points.*')
+            .join('point_items', 'points.id', '=', 'point_items.point_id')
             .modify(query => {
                 if(city !== undefined) query.where('city', String(city));
                 if(uf !== undefined) query.where('uf', String(uf).toUpperCase());
                 if(items !== undefined){
-                    query.join('point_items', 'points.id', '=', 'point_items.point_id')
                     query.whereIn('point_items.item_id', parsedItems );
                 }
             })
+            .distinct();
+
+        const pointItems = await knex('points')
+            .select('points.id')
+            .select('title')
+            .join('point_items', 'points.id', '=', 'point_items.point_id')
+            .join('items', 'items.id', '=', 'point_items.item_id')
+            .whereIn('points.id', points.map(p => p.id) )
             .distinct();
         
         const serializedPoints = points.map(point => {
             return {
                 ...point,
                 image_url: `/uploads/${point.image}`,
+                items: pointItems.filter(pointItem => pointItem.id === point.id ).map(pointItems => pointItems.title),
             };
         });
 
