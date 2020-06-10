@@ -5,44 +5,17 @@ import {Map, TileLayer, Marker} from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 import api from '../../services/api';
 import ibge from '../../services/ibge';
+import { Item, City, UF as UF_, IBGECityResponse, IBGEUFResponse } from '../../models/models';
 
 import './styles.css';
 import logo from '../../assets/logo.svg';
 import Dropzone from '../../components/Dropzone';
 import { ROOT, ITEMS, FILTER_UF, UF, FILTER_CITY, SUCCESS } from '../../constants';
 
-interface Item {
-    id: number;
-    name: string;
-    image_url: string;
-}
-
-interface UF {
-    id: number;
-    name: string;
-    abbv: string;
-}
-
-interface City {
-    id: number;
-    name: string;
-}
-
-interface IBGEUFResponse {
-    id: number;
-    nome: string;
-    sigla: string;
-}
-
-interface IBGECityResponse {
-    id: number;
-    nome: string;
-}
-
 const CreatePoint = () => {
 
     const [items, setItems] = useState<Item[]>([]);
-    const [ufs, setUfs] = useState<UF[]>([]);
+    const [ufs, setUfs] = useState<UF_[]>([]);
     const [cities, setCities] = useState<City[]>([]);
     const [initialPosition, setInitialPosition] = useState<[number,number]>([0,0]);
 
@@ -123,7 +96,6 @@ const CreatePoint = () => {
     useEffect(() => {
         api.get(ITEMS).then(response => {
             setItems(response.data);
-            console.log(response.data);
         });
     }, []);
 
