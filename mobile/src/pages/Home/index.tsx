@@ -3,14 +3,25 @@ import { Feather as Icon } from '@expo/vector-icons'
 import { View, ImageBackground, Image, StyleSheet, Text } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler'; 
 import { useNavigation } from '@react-navigation/native';
+import { Dropdown } from 'react-native-material-dropdown';
+import { POINTS } from '../../constants';
 
 const Home = () => {
     const navigation = useNavigation();
 
     function handleNavigationPoints() {
-        navigation.navigate('Points');
+        navigation.navigate(POINTS);
     }
     
+    const data = [{
+        value: 'Banana',
+      }, {
+        value: 'Mango',
+      }, {
+        value: 'Pear',
+      }];
+  
+
     return (
         <ImageBackground 
             source={require('../../assets/home-background.png')} 
@@ -22,7 +33,14 @@ const Home = () => {
                 <Text style={styles.description}>Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente.</Text>
             </View>
 
-            <View style={styles.footer}>
+            <View>
+            <Dropdown
+                label='Favorite Fruit'
+                data={data}
+            />
+            </View>
+
+            <View>
                 <RectButton style={styles.button} onPress={handleNavigationPoints}>
                     <View style={styles.buttonIcon}>
                         <Icon name="arrow-right" color="#FFF" size={24}/>
@@ -62,8 +80,6 @@ const styles = StyleSheet.create({
       maxWidth: 260,
       lineHeight: 24,
     },
-  
-    footer: {},
   
     select: {},
   

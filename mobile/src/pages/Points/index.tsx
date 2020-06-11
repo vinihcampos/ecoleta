@@ -8,30 +8,19 @@ import { SvgUri } from 'react-native-svg';
 import * as Location from 'expo-location';
 
 import api from '../../services/api';
-
-interface Item {
-    id: number;
-    name: string;
-    image_url: string;
-}
-
-interface Point {
-    id: number;
-    name: string;
-    image: string;
-    image_url: string;
-    latitude: number;
-    longitude: number;
-}
+import { Item, Point } from '../../models/models';
+import { DEFAULT_POSITION, ITEMS, POINTS, DETAIL, ROOT_SERVER } from '../../constants';
 
 const Points = () => {
 
     const navigation = useNavigation();
     const [items, setItems] = useState<Item[]>([]);
     const [points, setPoints] = useState<Point[]>([]);
-    const [initialPosition, setInitialPosition] = useState<[number,number]>([-23.59296,-46.6223104]);
+    const [initialPosition, setInitialPosition] = useState<[number,number]>(DEFAULT_POSITION);
 
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
+    const [selectedCity, setSelectedCity] = useState<string>('default');
+    const [selectedUf, setSelectedUf] = useState<string>('default');
 
     useEffect(() => {
         async function loadPosition () {
@@ -51,29 +40,29 @@ const Points = () => {
     })
 
     useEffect(() => {
-        api.get('items').then(response => {
+        api.get(ITEMS).then(response => {
             setItems(response.data);
         });
     }, []);
 
-    useEffect(() => {
-        api.get('points', {
+    useEffect( () => {
+        api.get(POINTS, {
             params: {
-                city: 'São Paulo',
-                uf: 'SP',
-                items: [1,2]
+                uf: selectedUf !== 'default' ? selectedUf : undefined,
+                city: selectedCity !== 'default' ? selectedCity : undefined,
+                items: selectedItems.size > 0 ? Array.from(selectedItems) : undefined,
             }
         }).then(response => {
             setPoints(response.data);
         });
-    }, []);
+    }, [selectedItems]);
 
     function handleNavigateBack() {
         navigation.goBack();
     }
 
     function handleNavigateToDetail(id: number) {
-        navigation.navigate('Detail', {point_id: id});
+        navigation.navigate(DETAIL, {point_id: id});
     }
 
     function handleSelectItem(id: number) {
@@ -96,7 +85,7 @@ const Points = () => {
                 <Text style={styles.description}>Encontre um ponto de coleta.</Text>
 
                 <View style={styles.mapContainer}>
-                    {initialPosition[0] !== -23.59296 && (
+                    {initialPosition[0] !== DEFAULT_POSITION[0] && (
                         <MapView 
                             style={styles.map}
                             initialRegion={{
@@ -115,7 +104,9 @@ const Points = () => {
                                         longitude: point.longitude,
                                     }}>
                                     <View style={styles.mapMarkerContainer}>
-                                        <Image style={styles.mapMarkerImage} source={{ uri: point.image_url }}/>
+                                        <Image 
+                                            style={styles.mapMarkerImage} 
+                                            source={{ uri: `${ROOT_SERVER}${point.image_url}` }}/>
                                         <Text style={styles.mapMarkerTitle}>{point.name}</Text>
                                     </View>
                                 </Marker>
@@ -138,7 +129,10 @@ const Points = () => {
                             ]} 
                             activeOpacity={0.5} 
                             onPress={() => handleSelectItem(item.id)}>
-                            <SvgUri width={42} height={42} uri={item.image_url}/>
+                            <SvgUri 
+                                width={42}
+                                height={42} 
+                                uri={`${ROOT_SERVER}${item.image_url}`}/>
                             <Text style={styles.itemTitle}>{item.name}</Text>
                         </TouchableOpacity>
                     ))}
@@ -150,99 +144,99 @@ const Points = () => {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      paddingHorizontal: 32,
-      paddingTop: 20 + Constants.statusBarHeight,
+        flex: 1,
+        paddingHorizontal: 32,
+        paddingTop: 20 + Constants.statusBarHeight,
     },
-  
+
     title: {
-      fontSize: 20,
-      fontFamily: 'Ubuntu_700Bold',
-      marginTop: 24,
+        fontSize: 20,
+        fontFamily: 'Ubuntu_700Bold',
+        marginTop: 24,
     },
-  
+
     description: {
-      color: '#6C6C80',
-      fontSize: 16,
-      marginTop: 4,
-      fontFamily: 'Roboto_400Regular',
+        color: '#6C6C80',
+        fontSize: 16,
+        marginTop: 4,
+        fontFamily: 'Roboto_400Regular',
     },
-  
+
     mapContainer: {
-      flex: 1,
-      width: '100%',
-      borderRadius: 10,
-      overflow: 'hidden',
-      marginTop: 16,
+        flex: 1,
+        width: '100%',
+        borderRadius: 10,
+        overflow: 'hidden',
+        marginTop: 16,
     },
-  
+
     map: {
-      width: '100%',
-      height: '100%',
+        width: '100%',
+        height: '100%',
     },
-  
+
     mapMarker: {
-      width: 90,
-      height: 80, 
+        width: 90,
+        height: 80, 
     },
-  
+
     mapMarkerContainer: {
-      width: 90,
-      height: 70,
-      backgroundColor: '#34CB79',
-      flexDirection: 'column',
-      borderRadius: 8,
-      overflow: 'hidden',
-      alignItems: 'center'
+        width: 90,
+        height: 70,
+        backgroundColor: '#34CB79',
+        flexDirection: 'column',
+        borderRadius: 8,
+        overflow: 'hidden',
+        alignItems: 'center'
     },
-  
+
     mapMarkerImage: {
-      width: 90,
-      height: 45,
-      resizeMode: 'cover',
+        width: 90,
+        height: 45,
+        resizeMode: 'cover',
     },
-  
+
     mapMarkerTitle: {
-      flex: 1,
-      fontFamily: 'Roboto_400Regular',
-      color: '#FFF',
-      fontSize: 13,
-      lineHeight: 23,
+        flex: 1,
+        fontFamily: 'Roboto_400Regular',
+        color: '#FFF',
+        fontSize: 13,
+        lineHeight: 23,
     },
-  
+
     itemsContainer: {
-      flexDirection: 'row',
-      marginTop: 16,
-      marginBottom: 32,
+        flexDirection: 'row',
+        marginTop: 16,
+        marginBottom: 32,
     },
-  
+
     item: {
-      backgroundColor: '#fff',
-      borderWidth: 2,
-      borderColor: '#eee',
-      height: 120,
-      width: 120,
-      borderRadius: 8,
-      paddingHorizontal: 16,
-      paddingTop: 20,
-      paddingBottom: 16,
-      marginRight: 8,
-      alignItems: 'center',
-      justifyContent: 'space-between',
-  
-      textAlign: 'center',
+        backgroundColor: '#fff',
+        borderWidth: 2,
+        borderColor: '#eee',
+        height: 120,
+        width: 120,
+        borderRadius: 8,
+        paddingHorizontal: 16,
+        paddingTop: 20,
+        paddingBottom: 16,
+        marginRight: 8,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+
+        textAlign: 'center',
     },
-  
+
     selectedItem: {
-      borderColor: '#34CB79',
-      borderWidth: 2,
+        borderColor: '#34CB79',
+        borderWidth: 2,
     },
-  
+
     itemTitle: {
-      fontFamily: 'Roboto_400Regular',
-      textAlign: 'center',
-      fontSize: 13,
+        fontFamily: 'Roboto_400Regular',
+        textAlign: 'center',
+        fontSize: 13,
     },
-  });
+});
 
 export default Points;
