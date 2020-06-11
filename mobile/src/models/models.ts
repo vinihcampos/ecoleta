@@ -15,6 +15,8 @@ export interface Point {
 
 export interface Params {
     point_id: number;
+    city: string;
+    uf: string;
 }
 
 export interface Data {
@@ -33,4 +35,26 @@ export interface Data {
     items: {
         title:string;
     }[];
+}
+
+export interface UF {
+    id: number;
+    name: string;
+    abbv: string;
+}
+
+export interface City {
+    id: number;
+    name: string;
+}
+
+export interface IBGEUFResponse {
+    id: number;
+    nome: string;
+    sigla: string;
+}
+
+export interface IBGECityResponse {
+    id: number;
+    nome: string;
 }

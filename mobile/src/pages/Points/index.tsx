@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Constants from 'expo-constants';
 import { Feather as Icon } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { SvgUri } from 'react-native-svg';
 import * as Location from 'expo-location';
 
 import api from '../../services/api';
-import { Item, Point } from '../../models/models';
-import { DEFAULT_POSITION, ITEMS, POINTS, DETAIL, ROOT_SERVER } from '../../constants';
+import { Item, Point, Params } from '../../models/models';
+import { DEFAULT_POSITION, ITEMS, POINTS, DETAIL, API_SERVER } from '../../constants';
 
 const Points = () => {
+
+    const route = useRoute();
+    const routeParams = route.params as Params;
 
     const navigation = useNavigation();
     const [items, setItems] = useState<Item[]>([]);
@@ -19,8 +22,6 @@ const Points = () => {
     const [initialPosition, setInitialPosition] = useState<[number,number]>(DEFAULT_POSITION);
 
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
-    const [selectedCity, setSelectedCity] = useState<string>('default');
-    const [selectedUf, setSelectedUf] = useState<string>('default');
 
     useEffect(() => {
         async function loadPosition () {
@@ -48,8 +49,8 @@ const Points = () => {
     useEffect( () => {
         api.get(POINTS, {
             params: {
-                uf: selectedUf !== 'default' ? selectedUf : undefined,
-                city: selectedCity !== 'default' ? selectedCity : undefined,
+                uf: routeParams.uf !== 'default' ? routeParams.uf : undefined,
+                city: routeParams.city !== 'default' ? routeParams.city : undefined,
                 items: selectedItems.size > 0 ? Array.from(selectedItems) : undefined,
             }
         }).then(response => {
@@ -106,7 +107,7 @@ const Points = () => {
                                     <View style={styles.mapMarkerContainer}>
                                         <Image 
                                             style={styles.mapMarkerImage} 
-                                            source={{ uri: `${ROOT_SERVER}${point.image_url}` }}/>
+                                            source={{ uri: `${API_SERVER}${point.image_url}` }}/>
                                         <Text style={styles.mapMarkerTitle}>{point.name}</Text>
                                     </View>
                                 </Marker>
@@ -132,7 +133,7 @@ const Points = () => {
                             <SvgUri 
                                 width={42}
                                 height={42} 
-                                uri={`${ROOT_SERVER}${item.image_url}`}/>
+                                uri={`${API_SERVER}${item.image_url}`}/>
                             <Text style={styles.itemTitle}>{item.name}</Text>
                         </TouchableOpacity>
                     ))}

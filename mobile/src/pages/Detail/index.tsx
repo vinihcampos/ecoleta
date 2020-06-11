@@ -7,7 +7,7 @@ import * as MailComposer from 'expo-mail-composer';
 import Constants from 'expo-constants';
 
 import api from '../../services/api';
-import { POINTS, ROOT_SERVER } from '../../constants';
+import { POINTS, API_SERVER } from '../../constants';
 import { Params, Data } from '../../models/models';
 
 const Detail = () => {
@@ -51,7 +51,7 @@ const Detail = () => {
                 </TouchableOpacity>
 
                 <Image style={styles.pointImage} source={{
-                    uri: `${ROOT_SERVER}${data.point.image_url}`
+                    uri: `${API_SERVER}${data.point.image_url}`
                 }}/>
                 <Text style={styles.pointName}>{data.point.name}</Text>
                 <Text style={styles.pointItems}>{data.items.map(i => i.title).join(', ')}</Text>

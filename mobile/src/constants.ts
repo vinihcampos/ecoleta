@@ -1,5 +1,6 @@
 // Application paths
-export const ROOT_SERVER = 'http://192.168.0.113:3333';
+export const API_SERVER = 'http://192.168.0.113:3333';
+export const API_IBGE = 'https://servicodados.ibge.gov.br/api/v1/localidades';
 export const ROOT = '/';
 export const CREATE_POINT = '/create';
 export const SEARCH_POINT = '/search';
