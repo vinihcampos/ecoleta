@@ -6,7 +6,7 @@
     <a href="#camera--screenshots-iphone--computer">Screenshots</a> •
     <a href="#--technologies">Technologies</a> •
     <a href="#hammer_and_wrench--features">Features</a> •
-    <a href="#writing_hand--author">Usage</a> •
+    <a href="#video_game--usage">Usage</a> •
     <a href="#writing_hand--author">Author</a> •
     <a href="#memo--license">License</a>
 </p>
